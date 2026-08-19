@@ -5,7 +5,7 @@ export type Car = {
   fuel: string; gearbox: string; drive: string; body: string; location: string;
   score: number; fit: number; confidence: number; image: string; source: string;
   consumption: string; annualCost: string; firstYear: string; risk: string;
-  highlights: string[]; flags: string[]; questions: string[];
+  highlights: string[]; flags: string[]; questions: string[]; sourceUrl?: string;
 };
 
 export const cars: Car[] = [
