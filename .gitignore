@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+dist/
+coverage/
+.env
+*.log
+apps/api/prisma/dev.db*
+apps/mobile/.eas/
+sources/
+AGENTS.md
+*.tsbuildinfo
+.pnpm-store/
