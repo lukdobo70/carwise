@@ -1,0 +1,81 @@
+import { useMemo, useState } from 'react';
+import { Search, SlidersHorizontal, Heart, GitCompareArrows, Bell, MapPin, Gauge, Fuel, Settings2, ChevronDown, Sparkles, ShieldCheck, TrendingDown, X, Check, AlertTriangle, ArrowRight, UserRound, Menu, CarFront, ExternalLink, Info, Clock3 } from 'lucide-react';
+import { cars, money, type Car, type Market } from './data';
+
+type View = 'home' | 'favorites' | 'compare';
+
+function Score({ car, compact = false }: { car: Car; compact?: boolean }) {
+  const label = car.market === 'new' ? 'Value Score' : 'Car Score';
+  const tone = car.score >= 80 ? 'great' : car.score >= 55 ? 'okay' : 'bad';
+  return <div className={`score score-${tone} ${compact ? 'score-compact' : ''}`} title={`${label} mierzy ${car.market === 'new' ? 'atrakcyjność oferty nowego auta' : 'jakość i ryzyko konkretnego egzemplarza'}`}>
+    <strong>{car.score}</strong><span>/100</span><small>{label}</small>
+  </div>;
+}
+
+function Toggle({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return <button className={`toggle ${active ? 'active' : ''}`} onClick={onClick}>{children}</button>;
+}
+
+function CarCard({ car, favorite, compared, onFavorite, onCompare, onOpen }: { car: Car; favorite: boolean; compared: boolean; onFavorite: () => void; onCompare: () => void; onOpen: () => void }) {
+  return <article className="car-card">
+    <div className="car-photo" style={{ backgroundImage: `url(${car.image})` }}>
+      <span className={`market-badge ${car.market}`}>{car.market === 'new' ? 'NOWE' : 'UŻYWANE'}</span>
+      {car.oldPrice && <span className="drop-badge"><TrendingDown size={14} /> Cena spadła</span>}
+      <button className={`icon-button heart ${favorite ? 'selected' : ''}`} onClick={onFavorite} aria-label="Dodaj do ulubionych"><Heart size={20} fill={favorite ? 'currentColor' : 'none'} /></button>
+    </div>
+    <div className="car-content">
+      <div className="car-heading"><div><p className="eyebrow">{car.year} · {car.source}</p><h3>{car.brand} {car.model}</h3><p>{car.trim}</p></div><Score car={car} compact /></div>
+      <div className="specs"><span><Gauge />{car.mileage.toLocaleString('pl-PL')} km</span><span><Fuel />{car.fuel}</span><span><Settings2 />{car.power} KM</span><span><MapPin />{car.location}</span></div>
+      <div className="fit-row"><span><Sparkles size={16}/> Dopasowanie do Ciebie</span><strong>{car.fit}%</strong></div>
+      <div className="fit-bar"><i style={{ width: `${car.fit}%` }} /></div>
+      <div className="price-row"><div>{car.oldPrice && <del>{money(car.oldPrice)}</del>}<strong>{money(car.price)}</strong></div><span className={`risk risk-${car.score >= 80 ? 'low' : car.score >= 55 ? 'mid' : 'high'}`}>{car.risk} ryzyko</span></div>
+      <div className="card-actions"><button className={`compare-btn ${compared ? 'selected' : ''}`} onClick={onCompare}><GitCompareArrows size={17}/>{compared ? 'W porównaniu' : 'Porównaj'}</button><button className="primary-small" onClick={onOpen}>Zobacz analizę <ArrowRight size={17}/></button></div>
+    </div>
+  </article>;
+}
+
+function Filters({ open, onClose, priceMax, setPriceMax, powerMin, setPowerMin, drive, setDrive, body, setBody, scoreMin, setScoreMin }: { open: boolean; onClose: () => void; priceMax: number; setPriceMax: (n:number)=>void; powerMin:number; setPowerMin:(n:number)=>void; drive:string; setDrive:(s:string)=>void; body:string; setBody:(s:string)=>void; scoreMin:number; setScoreMin:(n:number)=>void }) {
+  return <aside className={`filter-panel ${open ? 'open' : ''}`}>
+    <div className="panel-head"><div><span className="eyebrow">WYSZUKIWANIE</span><h2>Dopasuj auto</h2></div><button className="icon-button" onClick={onClose}><X/></button></div>
+    <label>Budżet do <b>{money(priceMax)}</b><input type="range" min="30000" max="200000" step="5000" value={priceMax} onChange={e=>setPriceMax(+e.target.value)} /></label>
+    <div className="filter-grid"><label>Moc od<input type="number" value={powerMin} onChange={e=>setPowerMin(+e.target.value)} /><small>KM</small></label><label>Car/Value Score od<input type="number" value={scoreMin} onChange={e=>setScoreMin(+e.target.value)} /><small>/100</small></label></div>
+    <fieldset><legend>Napęd</legend><div className="chips">{['Dowolny','FWD','RWD','AWD'].map(x=><Toggle key={x} active={drive===x} onClick={()=>setDrive(x)}>{x}</Toggle>)}</div></fieldset>
+    <fieldset><legend>Nadwozie</legend><div className="chips">{['Dowolne','Kombi','Sedan','SUV','Hatchback'].map(x=><Toggle key={x} active={body===x} onClick={()=>setBody(x)}>{x}</Toggle>)}</div></fieldset>
+    <details><summary>Silnik i osiągi <ChevronDown/></summary><div className="detail-note">Pojemność, moc, paliwo, spalanie, norma Euro i skrzynia biegów.</div></details>
+    <details><summary>Stan i historia <ChevronDown/></summary><div className="detail-note">Historia serwisowa, liczba właścicieli, VIN, OC i badanie techniczne.</div></details>
+    <details><summary>Wyposażenie <ChevronDown/></summary><div className="detail-note">Bezpieczeństwo, komfort, multimedia i wymagane elementy.</div></details>
+    <div className="panel-bottom"><button className="ghost" onClick={()=>{setPriceMax(200000);setPowerMin(0);setScoreMin(0);setDrive('Dowolny');setBody('Dowolne')}}>Wyczyść</button><button className="primary" onClick={onClose}>Pokaż wyniki</button></div>
+  </aside>;
+}
+
+function DetailModal({ car, onClose, favorite, onFavorite }: { car: Car; onClose:()=>void; favorite:boolean; onFavorite:()=>void }) {
+  return <div className="modal-backdrop" onMouseDown={onClose}><section className="detail-modal" onMouseDown={e=>e.stopPropagation()}>
+    <button className="icon-button modal-close" onClick={onClose}><X/></button>
+    <div className="detail-hero" style={{backgroundImage:`linear-gradient(90deg,rgba(4,18,17,.88),rgba(4,18,17,.2)),url(${car.image})`}}><span className={`market-badge ${car.market}`}>{car.market==='new'?'NOWE':'UŻYWANE'}</span><h2>{car.brand} {car.model}</h2><p>{car.trim} · {car.year} · {car.location}</p><div className="hero-scores"><Score car={car}/><div className="fit-large"><span>Fit Score</span><strong>{car.fit}<small>/100</small></strong><p>Dopasowanie do Twojego profilu</p></div></div></div>
+    <div className="rating-warning"><Info/><div><strong>Ten wynik dotyczy {car.market==='new'?'nowego':'używanego'} auta</strong><p>{car.market==='new'?'Value Score ocenia cenę, wyposażenie, gwarancję i koszty — nie stan techniczny.':'Car Score ocenia jakość i ryzyko tego konkretnego egzemplarza.'}</p></div></div>
+    <div className="detail-body"><div className="detail-main"><h3>Werdykt CarWise</h3><p className="verdict">{car.score>=80?'To mocny kandydat. Oferta ma dobry stosunek wartości do ryzyka, ale przed decyzją wykonaj wskazane sprawdzenia.':car.score>=55?'Oferta warta rozważenia warunkowo. Kluczowe punkty wymagają potwierdzenia przed zakupem.':'Najlepsze dopasowanie nie oznacza dobrego auta. Ryzyko jest wysokie i obecnie nie rekomendujemy zakupu.'}</p><div className="pros-cons"><div><h4><Check/> Mocne strony</h4>{car.highlights.map(x=><p key={x}>{x}</p>)}</div><div><h4><AlertTriangle/> Sprawdź koniecznie</h4>{car.flags.map(x=><p key={x}>{x}</p>)}</div></div><h3>Pytania do sprzedającego</h3><ol className="questions">{car.questions.map(x=><li key={x}>{x}</li>)}</ol></div><aside className="cost-box"><h3>Koszty w skrócie</h3><div><span>Realne spalanie</span><strong>{car.consumption}/100 km</strong></div><div><span>Utrzymanie roczne</span><strong>{car.annualCost}</strong></div><div><span>Koszt 1. roku</span><strong>{car.firstYear}</strong></div><div><span>Pewność danych</span><strong>{car.confidence}%</strong></div><button className="primary" onClick={onFavorite}><Heart size={18} fill={favorite?'currentColor':'none'}/>{favorite?'Obserwujesz cenę':'Dodaj i monitoruj cenę'}</button><a href="#source">Otwórz ofertę źródłową <ExternalLink size={15}/></a></aside></div>
+  </section></div>;
+}
+
+function CompareView({ selected, remove }: { selected: Car[]; remove:(id:number)=>void }) {
+  if(selected.length<2) return <div className="empty"><GitCompareArrows size={48}/><h2>Dodaj co najmniej dwa auta</h2><p>Wybierz samochody z listy ofert, aby zestawić koszty, ryzyko i dopasowanie.</p></div>;
+  const mixed = new Set(selected.map(c=>c.market)).size>1;
+  const rows: [string,(c:Car)=>string|number,boolean][] = [['Cena',c=>money(c.price),true],['Rok',c=>c.year,false],['Przebieg',c=>`${c.mileage.toLocaleString('pl-PL')} km`,true],['Moc',c=>`${c.power} KM`,false],['Napęd',c=>c.drive,false],['Spalanie',c=>c.consumption,false],['Koszt 1. roku',c=>c.firstYear,false],['Dopasowanie',c=>`${c.fit}/100`,false],['Ryzyko',c=>c.risk,false]];
+  return <div className="compare-page"><div className="section-title"><div><span className="eyebrow">PORÓWNANIE 1:1</span><h1>Różnice bez zgadywania</h1></div></div>{mixed&&<div className="mixed-warning"><AlertTriangle/><div><strong>Porównujesz nowe i używane auto</strong><p>Ich ratingi mierzą inne rzeczy, dlatego nie wskazujemy zwycięzcy na podstawie samej oceny.</p></div></div>}<div className="compare-table"><div className="compare-cars"><div></div>{selected.map(c=><div className="compare-car" key={c.id}><button onClick={()=>remove(c.id)}><X size={16}/></button><img src={c.image}/><span className={`market-badge ${c.market}`}>{c.market==='new'?'NOWE':'UŻYWANE'}</span><h3>{c.brand} {c.model}</h3><p>{c.trim}</p><Score car={c} compact/></div>)}</div>{rows.map(([label,get])=><div className="compare-row" key={label}><strong>{label}</strong>{selected.map(c=><span key={c.id}>{get(c)}</span>)}</div>)}</div></div>;
+}
+
+function FavoritesView({ favorites, toggle }: { favorites: Car[]; toggle:(id:number)=>void }) {
+  return <div><div className="section-title"><div><span className="eyebrow">TWÓJ GARAŻ</span><h1>Ulubione i monitoring cen</h1><p>Obserwujemy ceny oraz ważne zmiany w ogłoszeniach.</p></div><button className="primary"><Bell size={18}/> Ustawienia alertów</button></div>{favorites.length===0?<div className="empty"><Heart size={48}/><h2>Nie masz jeszcze ulubionych</h2><p>Dodaj auto sercem, a zaczniemy obserwować jego cenę.</p></div>:<><div className="monitor-summary"><div><Bell/><span><strong>{favorites.length}</strong> obserwowane oferty</span></div><div><TrendingDown/><span><strong>{favorites.filter(c=>c.oldPrice).length}</strong> obniżki ceny</span></div><div><Clock3/><span>Ostatnia kontrola <strong>12 min temu</strong></span></div></div><div className="favorite-list">{favorites.map(c=><div className="favorite-row" key={c.id}><img src={c.image}/><div><span className={`market-badge ${c.market}`}>{c.market==='new'?'NOWE':'UŻYWANE'}</span><h3>{c.brand} {c.model} <small>{c.trim}</small></h3><p>{c.source} · {c.location}</p></div><div className="price-history"><span>Historia ceny</span><svg viewBox="0 0 130 34"><polyline points="0,8 24,9 50,14 75,13 100,24 130,27"/></svg></div><div className="fav-price">{c.oldPrice&&<del>{money(c.oldPrice)}</del>}<strong>{money(c.price)}</strong>{c.oldPrice&&<span>−{money(c.oldPrice-c.price)}</span>}</div><button className="icon-button" onClick={()=>toggle(c.id)}><X/></button></div>)}</div></>}</div>;
+}
+
+export default function App() {
+  const [view,setView]=useState<View>('home'); const [market,setMarket]=useState<Market>('used'); const [filters,setFilters]=useState(false); const [query,setQuery]=useState('');
+  const [favorites,setFavorites]=useState<number[]>([1,3,6]); const [compare,setCompare]=useState<number[]>([]); const [detail,setDetail]=useState<Car|null>(null);
+  const [priceMax,setPriceMax]=useState(200000); const [powerMin,setPowerMin]=useState(0); const [scoreMin,setScoreMin]=useState(0); const [drive,setDrive]=useState('Dowolny'); const [body,setBody]=useState('Dowolne');
+  const results=useMemo(()=>cars.filter(c=>c.market===market&&c.price<=priceMax&&c.power>=powerMin&&c.score>=scoreMin&&(drive==='Dowolny'||c.drive===drive)&&(body==='Dowolne'||c.body===body)&&`${c.brand} ${c.model} ${c.trim}`.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>b.fit-a.fit),[market,priceMax,powerMin,scoreMin,drive,body,query]);
+  const toggleFav=(id:number)=>setFavorites(v=>v.includes(id)?v.filter(x=>x!==id):[...v,id]); const toggleCompare=(id:number)=>setCompare(v=>v.includes(id)?v.filter(x=>x!==id):v.length<4?[...v,id]:v);
+  return <><header><button className="brand" onClick={()=>setView('home')}><span><CarFront/></span>carwise<em>.</em></button><nav><button className={view==='home'?'active':''} onClick={()=>setView('home')}>Znajdź auto</button><button className={view==='favorites'?'active':''} onClick={()=>setView('favorites')}>Ulubione <b>{favorites.length}</b></button><button className={view==='compare'?'active':''} onClick={()=>setView('compare')}>Porównaj <b>{compare.length}</b></button><button>Jak to działa</button></nav><div className="header-right"><button className="profile"><UserRound/> <span>Mój profil</span></button><button className="mobile-menu"><Menu/></button></div></header>
+  <main>{view==='home'?<><section className="hero"><div className="hero-copy"><span className="hero-kicker"><Sparkles size={15}/> AI, które stoi po Twojej stronie</span><h1>Nie szukaj auta.<br/><em>Znajdź to właściwe.</em></h1><p>Porównujemy oferty, liczymy prawdziwe koszty i wykrywamy ryzyko — zanim wydasz swoje pieniądze.</p><div className="market-switch"><button className={market==='used'?'active':''} onClick={()=>setMarket('used')}>Używane</button><button className={market==='new'?'active':''} onClick={()=>setMarket('new')}>Nowe</button></div><div className="searchbox"><Search/><input placeholder="Marka, model lub wersja..." value={query} onChange={e=>setQuery(e.target.value)}/><button onClick={()=>setFilters(true)}><SlidersHorizontal/> Filtry</button><button className="search-go">Szukaj</button></div><div className="trust"><span><ShieldCheck/> Niezależny rating</span><span><Check/> Bez ukrytych promocji</span><span><Sparkles/> Dopasowanie AI</span></div></div><div className="hero-visual"><div className="floating-card"><span>Najlepsze dopasowanie</span><strong>92<small>/100</small></strong><p>Škoda Octavia 1.5 TSI</p><i>Car Score 84</i></div></div></section><section className="results"><div className="section-title"><div><span className="eyebrow">WYBRANE DLA CIEBIE</span><h2>Najlepsze dopasowania</h2><p>Na podstawie Twoich preferencji: {market==='used'?'używane, bezwypadkowe, automatyczna skrzynia':'nowe, korzystna cena i niskie koszty'}.</p></div><button className="outline" onClick={()=>setFilters(true)}><SlidersHorizontal/> Wszystkie filtry</button></div><div className="results-meta"><span><strong>{results.length}</strong> ofert spełnia kryteria</span><label>Sortuj: <select><option>Najlepiej dopasowane</option><option>Najwyższy rating</option><option>Najniższa cena</option></select></label></div><div className="car-grid">{results.map(c=><CarCard key={c.id} car={c} favorite={favorites.includes(c.id)} compared={compare.includes(c.id)} onFavorite={()=>toggleFav(c.id)} onCompare={()=>toggleCompare(c.id)} onOpen={()=>setDetail(c)}/>)}</div>{results.length===0&&<div className="empty"><Search size={48}/><h2>Brak ofert z tym zestawem filtrów</h2><p>Poszerz budżet lub zmniejsz minimalny rating.</p></div>}</section></>:view==='favorites'?<FavoritesView favorites={cars.filter(c=>favorites.includes(c.id))} toggle={toggleFav}/>:<CompareView selected={cars.filter(c=>compare.includes(c.id))} remove={toggleCompare}/>}</main>
+  {compare.length>0&&view!=='compare'&&<button className="compare-float" onClick={()=>setView('compare')}><GitCompareArrows/><span>Porównaj wybrane</span><b>{compare.length}</b></button>}
+  <Filters open={filters} onClose={()=>setFilters(false)} {...{priceMax,setPriceMax,powerMin,setPowerMin,drive,setDrive,body,setBody,scoreMin,setScoreMin}}/>{filters&&<div className="drawer-backdrop" onClick={()=>setFilters(false)}/>} {detail&&<DetailModal car={detail} onClose={()=>setDetail(null)} favorite={favorites.includes(detail.id)} onFavorite={()=>toggleFav(detail.id)}/>}<footer><div className="brand"><span><CarFront/></span>carwise<em>.</em></div><p>Mądrzejsza droga do właściwego auta.</p><small>Raport CarWise nie zastępuje oględzin ani diagnostyki w niezależnym warsztacie.</small></footer></>;
+}
