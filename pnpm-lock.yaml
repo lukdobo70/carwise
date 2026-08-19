@@ -1,0 +1,83 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@6.4.3)
+      lucide-react:
+        specifier: ^0.468.0
+        version: 0.468.0(react@18.3.1)
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      vite:
+        specifier: ^6.0.7
+        version: 6.4.3
+    devDependencies:
+      '@testing-library/jest-dom':
+        specifier: 6.9.1
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: ^16.1.0
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/react':
+        specifier: ^18.3.18
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.3.5
+        version: 18.3.7(@types/react@18.3.31)
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(jsdom@25.0.1)
+
+packages:
+
+  '@adobe/css-tools@4.5.0':
+    resolution: {integrity: sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q==}
+
+  '@asamuzakjp/css-color@3.2.0':
+    resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
+
+  '@babel/code-frame@7.29.7':
+    resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/compat-data@7.29.7':
+    resolution: {integrity: sha512-locTkQyKvwIEgBzVrn8693ebc97F2U8ZHjbXwDXJ5Fn2TCpNwTlKcaKLkdHop5c/icOFE7qt7Q9JC5hnKNa6Gg==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/core@7.29.7':
+    resolution: {integrity: sha512-RgHBCvtjbOK2gXSNBNIkNoEc9qoVEtau3hj8gEqKQuL3HZAibKarWFEI3Lfm6EYKkLalOh8eSrj9b+ch9H/VBA==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/generator@7.29.8':
+    resolution: {integrity: sha512-gZbepsdh3WDtgZKWL+vTPh71LSBrm/Y4/QDZBVCcYfmeTEEuoOYwlSy+G1StfJg+/Zy550u/3TATbm7qDbbMtg==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-compilation-targets@7.29.7':
+    resolution: {integrity: sha512-wem6WaBj4NaVYVdNhLPPVacES6ZJ+KBBfSkTMD3YZxbP3rm3Di85tJU5ljaUNhaOynt+Aj0xruhYuzQBt8n71g==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-globals@7.29.7':
+    resolution: {integrity: sha512-3nQVUAtvkKH9zahfW…24387 tokens truncated…o weryfikacji'], questions: ['Czy sprzedający udostępni VIN?', 'Kiedy serwisowano DSG?', 'Czy DPF był wymieniany lub czyszczony?'], image: 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=85' },
+  { id: 6, market: 'new', brand: 'Kia', model: 'Sportage', trim: '1.6 T-GDI M DCT', year: 2026, price: 139900, oldPrice: 146900, mileage: 5, engine: 1598, power: 160, fuel: 'Benzyna', gearbox: 'Automatyczna', drive: 'FWD', body: 'SUV', location: 'Katowice', score: 87, fit: 83, confidence: 96, source: 'Dealer Kia', consumption: '7,1–8,4 l', annualCost: '11 500–14 800 zł', firstYear: '13 000–16 500 zł', risk: 'Gwarancja 7 lat', highlights: ['Rabat 7 000 zł', '7 lat gwarancji', 'Dostępny od ręki'], flags: ['Wyższa utrata wartości'], questions: ['Czy rabat łączy się z finansowaniem?', 'Jaki jest termin odbioru?', 'Czy pakiet serwisowy jest w cenie?'], image: 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=85' },
+  { id: 7, market: 'new', brand: 'Toyota', model: 'C-HR', trim: '1.8 Hybrid Comfort', year: 2026, price: 128900, mileage: 0, engine: 1798, power: 140, fuel: 'Hybryda', gearbox: 'Automatyczna', drive: 'FWD', body: 'SUV', location: 'Łódź', score: 91, fit: 80, confidence: 97, source: 'Dealer Toyota', consumption: '4,7–5,3 l', annualCost: '8 600–10 700 zł', firstYear: '10 000–12 500 zł', risk: 'Gwarancja 3 lata', highlights: ['Niskie spalanie', 'Wysoka wartość rezydualna', 'Dobra cena'], flags: ['Ograniczona przestrzeń z tyłu'], questions: ['Czy cena obejmuje lakier?', 'Ile kosztuje gwarancja przedłużona?', 'Czy auto jest z roku modelowego 2026?'], image: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=1200&q=85' },
+];
+
+export const money = (value: number) => new Intl.NumberFormat('pl-PL').format(value) + ' zł';
